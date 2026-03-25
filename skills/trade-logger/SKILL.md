@@ -56,3 +56,16 @@ The trades.csv file contains the following columns:
 
 ## Dependencies
 The script uses only built-in Python libraries (csv, os, sys, datetime) and does not require any external dependencies.
+
+## Example Output
+
+```
+Trade logged: BUY 20 SOL at $105/SOL for $2100 total
+
+P&L Summary:
+Total trades: 5
+Total bought: 50 SOL
+Total sold: 30 SOL
+Remaining holdings: 20 SOL
+Overall profit/loss: $350
+```

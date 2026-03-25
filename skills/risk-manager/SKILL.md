@@ -60,3 +60,23 @@ If the script encounters an error, Claude should verify the input values and ens
 
 ## Dependencies
 The script uses only built-in Python libraries (sys, math, decimal) and does not require any external dependencies.
+
+## Example Output
+
+```
+{
+   "total_portfolio_balance": 10000.0,
+   "entry_price": 105.0,
+   "stop_loss_price": 100.0,
+   "take_profit_price": 120.0,
+   "position_size_sol": 2.0,
+   "position_value_usd": 210.0,
+   "position_percentage_of_portfolio": 2.1,
+   "dollar_amount_at_risk": 100.0,
+   "potential_profit": 30.0,
+   "potential_loss": 10.0,
+   "risk_percentage": 1.0,
+   "reward_ratio": 3.0,
+   "risk_to_reward_ratio": 3.0
+}
+```

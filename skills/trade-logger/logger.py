@@ -79,7 +79,7 @@ def log_trade(action, amount, price, total_value=None, filename='trades.csv'):
     return True
 
 
-def calculate_pnl(filename='trades.csv'):
+def calculate_pnl(filename='trades.csv', export_json=False):
     """
     Calculate the total profit/loss from all trades in the CSV file.
     For simplicity, this calculates unrealized P&L assuming current price of SOL.
@@ -87,6 +87,7 @@ def calculate_pnl(filename='trades.csv'):
 
     Args:
         filename (str): Path to the CSV file
+        export_json (bool): Export the result as JSON
 
     Returns:
         dict: Dictionary containing P&L information
@@ -98,6 +99,7 @@ def calculate_pnl(filename='trades.csv'):
     try:
         buys = []
         sells = []
+        trades = []
 
         with open(filename, 'r') as csvfile:
             reader = csv.DictReader(csvfile)
@@ -106,6 +108,7 @@ def calculate_pnl(filename='trades.csv'):
                 action = row['Action'].lower()
                 amount = float(row['Amount'])
                 price = float(row['Price'])
+                trades.append(row)
 
                 if action == 'buy':
                     buys.append({'amount': amount, 'price': price})
@@ -126,16 +129,20 @@ def calculate_pnl(filename='trades.csv'):
         total_sold = sum(sell['amount'] for sell in sells)
         remaining_holdings = total_bought - total_sold
 
-        return {
+        result = {
             'total_buy_value': total_buy_value,
             'total_sell_value': total_sell_value,
             'pnl': pnl,
             'total_bought': total_bought,
             'total_sold': total_sold,
             'remaining_holdings': remaining_holdings,
-            'trade_count': len(buys) + len(sells)
+            'trade_count': len(buys) + len(sells),
+            'trades': trades
         }
-
+        if export_json:
+            import json
+            print(json.dumps(result, indent=2))
+        return result
     except Exception as e:
         print(f"Error calculating P&L: {str(e)}", file=sys.stderr)
         return None
@@ -147,11 +154,13 @@ def main():
     Usage:
     - Log a trade: python logger.py log buy 1.5 25.50
     - Calculate P&L: python logger.py pnl
+    - Export P&L and trades as JSON: python logger.py pnl --json
     """
     if len(sys.argv) < 2:
         print("Usage:")
         print("  Log a trade: python logger.py log <action> <amount> <price>")
         print("  Calculate P&L: python logger.py pnl")
+        print("  Export P&L and trades as JSON: python logger.py pnl --json")
         sys.exit(1)
 
     command = sys.argv[1].lower()
@@ -170,17 +179,17 @@ def main():
             sys.exit(1)
 
     elif command == 'pnl':
-        pnl_data = calculate_pnl()
-        if pnl_data:
+        export_json = '--json' in sys.argv
+        pnl_data = calculate_pnl(export_json=export_json)
+        if pnl_data and not export_json:
             print("Profit/Loss Summary:")
             print(f"  Total trades: {pnl_data['trade_count']}")
             print(f"  Total bought: {pnl_data['total_bought']} SOL (${pnl_data['total_buy_value']:,.2f})")
             print(f"  Total sold: {pnl_data['total_sold']} SOL (${pnl_data['total_sell_value']:,.2f})")
             print(f"  Remaining holdings: {pnl_data['remaining_holdings']} SOL")
             print(f"  P&L: ${pnl_data['pnl']:,.2f}")
-        else:
+        elif not pnl_data:
             sys.exit(1)
-
     else:
         print("Unknown command. Use 'log' to log a trade or 'pnl' to calculate profit/loss.")
         sys.exit(1)

@@ -55,3 +55,20 @@ When executed successfully, the script returns a JSON object with the following 
 ```
 
 Claude should format this data appropriately for the user, focusing on the most relevant information for trading decisions.
+## Example Output
+
+```
+{
+  "timestamp": "2023-10-27T10:30:00.123456",
+  "coin_id": "solana",
+  "symbol": "sol",
+  "name": "Solana",
+  "current_price_usd": 25.45,
+  "price_change_percentage_24h": 3.21,
+  "price_change_percentage_7d": -1.56,
+  "total_volume_24h_usd": 1234567890,
+  "market_cap_usd": 9876543210,
+  "circulating_supply": 384000000,
+  "last_updated": "2023-10-27T10:29:55.000Z"
+}
+```
